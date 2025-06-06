@@ -254,10 +254,29 @@ load_models()
 
 
 if __name__ == '__main__':
+    from pyngrok import ngrok, conf
+
+    NGROK_AUTH_TOKEN = os.getenv("NGROK_AUTH_TOKEN")
+    NGROK_DOMAIN = os.getenv("NGROK_DOMAIN")
+
+    if NGROK_AUTH_TOKEN and NGROK_DOMAIN:
+        conf.get_default().auth_token = NGROK_AUTH_TOKEN
+        try:
+            public_url = ngrok.connect(
+                addr=5000,
+                proto="http",
+                domain=NGROK_DOMAIN
+            )
+            print(f"🌐 ngrok tunnel active at: {public_url}")
+        except Exception as e:
+            print(f"❌ Failed to start ngrok tunnel: {e}")
+    else:
+        print("⚠️  NGROK_AUTH_TOKEN or NGROK_DOMAIN not set. Skipping ngrok tunnel.")
+
     print("🚀 Starting AI Companion Backend with Gemini API...")
     print("📍 Backend running at: http://localhost:5000")
     print("🤖 Gemini API Status:", "✅ Ready" if gemini_model else "❌ Not configured")
     print("🎭 Emotion Model Status:", "✅ Ready" if emotion_model else "❌ Not available")
-    print("\n💡 Make sure to set your GEMINI_API_KEY in your .env file!")
+    print("💡 Make sure to set your GEMINI_API_KEY in your .env file!")
     print("💡 Get your API key from: https://makersuite.google.com/app/apikey") 
     app.run(debug=True, host='0.0.0.0', port=5000)
