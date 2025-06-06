@@ -1,0 +1,7 @@
+Flask
+Flask-CORS
+python-dotenv
+transformers
+torch
+google-generativeai
+gunicorn
